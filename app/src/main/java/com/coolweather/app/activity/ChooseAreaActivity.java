@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -83,17 +84,17 @@ public class ChooseAreaActivity extends Activity {
                     queryCounties();
                 } else if (currentLevel == LEVEL_COUNTY) {
                     String countyCode = countyList.get(position).getCountyCode();
-                    Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
-                    intent.putExtra("county_code",countyCode);
+                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+                    intent.putExtra("county_code", countyCode);
                     startActivity(intent);
-                    finish();
+
                 }
             }
         });
         queryProvinces();
     }
 
-    /*²éÑ¯È«¹úËùÓĞµÄÊ¡£¬ÓÅÏÈ´ÓÊı¾İ¿â²éÑ¯£¬Èç¹ûÃ»ÓĞ²éÑ¯µ½ÔÙÈ¥·şÎñÆ÷²éÑ¯*/
+    /*æŸ¥è¯¢å…¨å›½æ‰€æœ‰çš„çœï¼Œä¼˜å…ˆä»æ•°æ®åº“æŸ¥è¯¢ï¼Œå¦‚æœæ²¡æœ‰æŸ¥è¯¢åˆ°å†å»æœåŠ¡å™¨æŸ¥è¯¢*/
     private void queryProvinces() {
         provinceList = coolWeatherDB.loadProvinces();
         if (provinceList.size() > 0) {
@@ -103,30 +104,31 @@ public class ChooseAreaActivity extends Activity {
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
-            titleText.setText("ÖĞ¹ú");
+            titleText.setText("ä¸­å›½");
             currentLevel = LEVEL_PROVINCE;
         } else {
             queryFromServer(null,"province");
         }
     }
 
-    //²éÑ¯Ñ¡ÖĞÊ¡ÄÚËùÓĞµÄÊĞ£¬ÓÅÏÈ´ÓÊı¾İ¿â²éÑ¯£¬Èç¹ûÃ»ÓĞ²éÑ¯µ½ÔÙÈ¥·şÎñÆ÷ÉÏ²éÑ¯
+    //æŸ¥è¯¢é€‰ä¸­çœå†…æ‰€æœ‰çš„å¸‚ï¼Œä¼˜å…ˆä»æ•°æ®åº“æŸ¥è¯¢ï¼Œå¦‚æœæ²¡æœ‰æŸ¥è¯¢åˆ°å†å»æœåŠ¡å™¨ä¸ŠæŸ¥è¯¢
     private void queryCities() {
         cityList = coolWeatherDB.loadCities(selectedProvince.getId());
         if (cityList.size() > 0) {
             dataList.clear();
             for (City city : cityList) {
                 dataList.add(city.getCityName());
-                listView.setSelection(0);
-                titleText.setText(selectedProvince.getProvinceName());
-                currentLevel = LEVEL_CITY;
             }
+            adapter.notifyDataSetChanged();
+            listView.setSelection(0);
+            titleText.setText(selectedProvince.getProvinceName() + "å¸‚");
+            currentLevel = LEVEL_CITY;
         } else {
             queryFromServer(selectedProvince.getProvinceCode(), "city");
         }
     }
 
-    //²éÑ¯Ñ¡ÖĞÊĞÄÚËùÓĞµÄÏØ£¬ÓÅÏÈ´ÓÊı¾İ¿â²éÑ¯£¬Èç¹ûÃ»ÓĞ²éÑ¯µ½ÔÙÈ¥·şÎñÆ÷ÉÏ²éÑ¯
+    //æŸ¥è¯¢é€‰ä¸­å¸‚å†…æ‰€æœ‰çš„å¿ï¼Œä¼˜å…ˆä»æ•°æ®åº“æŸ¥è¯¢ï¼Œå¦‚æœæ²¡æœ‰æŸ¥è¯¢åˆ°å†å»æœåŠ¡å™¨ä¸ŠæŸ¥è¯¢
     private void queryCounties() {
         countyList = coolWeatherDB.loadCounties(selectedCity.getId());
         if (countyList.size() > 0) {
@@ -143,7 +145,7 @@ public class ChooseAreaActivity extends Activity {
         }
     }
 
-    //¸ù¾İ´«ÈëµÄ´úºÅºÍÀàĞÍ´Ó·şÎñÆ÷ÉÏ²éÑ¯Ê¡ÊĞÏØÊı¾İ
+    //æ ¹æ®ä¼ å…¥çš„ä»£å·å’Œç±»å‹ä»æœåŠ¡å™¨ä¸ŠæŸ¥è¯¢çœå¸‚å¿æ•°æ®
     private void queryFromServer(final String code,final String type) {
         String address;
         if (TextUtils.isEmpty(code)) {
@@ -186,31 +188,31 @@ public class ChooseAreaActivity extends Activity {
                     @Override
                     public void run() {
                         closeProgressDialog();
-                        Toast.makeText(ChooseAreaActivity.this,"¼ÓÔØÊ§°Ü",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChooseAreaActivity.this,"åŠ è½½å¤±è´¥",Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
     }
 
-    //ÏÔÊ¾½ø¶È¶Ô»°¿ò
+    //æ˜¾ç¤ºè¿›åº¦å¯¹è¯æ¡†
     private void showProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage("ÕıÔÚ¼ÓÔØ...");
+            progressDialog.setMessage("æ­£åœ¨åŠ è½½...");
             progressDialog.setCanceledOnTouchOutside(false);
         }
         progressDialog.show();
     }
 
-    // ¹Ø±Õ¶Ô»°¿ò
+    // å…³é—­å¯¹è¯æ¡†
     private void closeProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
     }
 
-    //²¶»ñBack°´¼ü£¬¸ù¾İµ±Ç°µÄ¼¶±ğÀ´ÅĞ¶Ï£¬´ËÊ±Ó¦¸Ã·µ»ØÊĞÁĞ±í¡¢Ê¡ÁĞ±í£¬»¹ÊÇÖ±½ÓÍË³ö
+    //æ•è·BackæŒ‰é”®ï¼Œæ ¹æ®å½“å‰çš„çº§åˆ«æ¥åˆ¤æ–­ï¼Œæ­¤æ—¶åº”è¯¥è¿”å›å¸‚åˆ—è¡¨ã€çœåˆ—è¡¨ï¼Œè¿˜æ˜¯ç›´æ¥é€€å‡º
 
     @Override
     public void onBackPressed() {

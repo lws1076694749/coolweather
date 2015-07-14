@@ -23,7 +23,7 @@ import java.util.Locale;
  */
 public class Utility {
 
-    //½âÎöºÍ´¦Àí·şÎñÆ÷·µ»ØµÄÊ¡¼¶Êı¾İ
+
     public synchronized static boolean handleProvinceResponse(CoolWeatherDB coolWeatherDB,String response) {
         if (!TextUtils.isEmpty(response)) {
             String[] allProvinces = response.split(",");
@@ -33,7 +33,6 @@ public class Utility {
                     Province province = new Province();
                     province.setProvinceCode(array[0]);
                     province.setProvinceName(array[1]);
-                    //½«½âÎö³öÀ´µÄÊı¾İ´æ´¢µ½Province±í
                     coolWeatherDB.saveProvince(province);
                 }
                 return true;
@@ -42,7 +41,6 @@ public class Utility {
         return false;
     }
 
-    //½âÎöºÍ´¦Àí·şÎñÆ÷·µ»ØµÄÊĞ¼¶Êı¾İ
     public static boolean handleCityResponse(CoolWeatherDB coolWeatherDB,String response,int provinceId) {
         if (!TextUtils.isEmpty(response)) {
             String[] allCities = response.split(",");
@@ -61,7 +59,6 @@ public class Utility {
         return false;
     }
 
-//    ½âÎöºÍ´¦Àí·şÎñÆ÷·µ»ØµÄÏØ¼¶Êı¾İ
     public static boolean handleCountiesResponse(CoolWeatherDB coolWeatherDB,String response,int cityId) {
         if (!TextUtils.isEmpty(response)) {
             String[] allCounties = response.split(",");
@@ -80,7 +77,6 @@ public class Utility {
         return false;
     }
 
-    /*½âÎö·şÎñÆ÷·µ»ØµÄJSONÊı¾İ£¬²¢½«½âÎö³öµÄÊı¾İ´æ´¢µ½±¾µØ*/
     public static void handleWeatherResponse(Context context,String response) {
         try {
             JSONObject jsonObject = new JSONObject(response);
@@ -97,9 +93,8 @@ public class Utility {
         }
     }
 
-    /*½«·şÎñÆ÷·µ»ØµÄËùÓĞÌìÆøĞÅÏ¢´æ´¢µ½SharedPreferencesÎÄ¼şÖĞ*/
     public static void saveWeatherInfo(Context context,String cityName,String weatherCode,String temp1,String temp2,String weatherDesp,String publishTime) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyÄêMÔÂdÈÕ", Locale.CHINA);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyå¹´Mæœˆdæ—¥", Locale.CHINA);
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putBoolean("city_selected",true);
         editor.putString("city_name", cityName);

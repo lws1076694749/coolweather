@@ -24,21 +24,21 @@ import com.coolweather.app.util.Utility;
  */
 public class WeatherActivity extends Activity implements View.OnClickListener{
     private LinearLayout weatherInfoLayout;
-    /*ÓÃÓÚÏÔÊ¾³ÇÊĞÃû*/
+    /*ç”¨äºæ˜¾ç¤ºåŸå¸‚å*/
     private TextView cityNameText;
-    /*ÓÃÓÚÏÔÊ¾·¢²¼Ê±¼ä*/
+    /*ç”¨äºæ˜¾ç¤ºå‘å¸ƒæ—¶é—´*/
     private TextView publishText;
-    /*ÓÃÓÚÏÔÊ¾ÌìÆøÃèÊöĞÅÏ¢*/
+    /*ç”¨äºæ˜¾ç¤ºå¤©æ°”æè¿°ä¿¡æ¯*/
     private TextView weatherDespText;
-    /*ÓÃÓÚÏÔÊ¾ÆøÎÂ1*/
+    /*ç”¨äºæ˜¾ç¤ºæ°”æ¸©1*/
     private TextView temp1Text;
-    /*ÓÃÓÚÏÔÊ¾ÆøÎÂ2*/
+    /*ç”¨äºæ˜¾ç¤ºæ°”æ¸©2*/
     private TextView temp2Text;
-    /*ÓÃÓÚÏÔÊ¾µ±Ç°ÈÕÆÚ*/
+    /*ç”¨äºæ˜¾ç¤ºå½“å‰æ—¥æœŸ*/
     private TextView currentDataText;
-    /*ÇĞ»»³ÇÊĞ°´Å¥*/
+    /*åˆ‡æ¢åŸå¸‚æŒ‰é’®*/
     private Button switchCity;
-    /*¸üĞÂÌìÆø°´Å¥*/
+    /*æ›´æ–°å¤©æ°”æŒ‰é’®*/
     private Button refreshWeather;
 
     @Override
@@ -46,7 +46,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.weather_layout);
-//        ³õÊ¼»¯¸÷¿Ø¼ş
+//        åˆå§‹åŒ–å„æ§ä»¶
         weatherInfoLayout = (LinearLayout)findViewById(R.id.weather_info_layout);
         cityNameText = (TextView)findViewById(R.id.city_name);
         publishText = (TextView)findViewById(R.id.publish_text);
@@ -58,10 +58,10 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         refreshWeather = (Button)findViewById(R.id.refresh_weather);
         String countyCode = getIntent().getStringExtra("county_code");
         if (!TextUtils.isEmpty(countyCode)) {
-            publishText.setText("Í¬²½ÖĞ...");
+            publishText.setText("åŒæ­¥ä¸­...");
             weatherInfoLayout.setVisibility(View.INVISIBLE);
             cityNameText.setVisibility(View.INVISIBLE);
-            queryWeatherCode(countyCode);
+            queryWeatherInfo(countyCode);
         } else {
             showWeather();
         }
@@ -80,7 +80,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
                 finish();
                 break;
             case R.id.refresh_weather:
-                publishText.setText("Í¬²½ÖĞ...");
+                publishText.setText("åŒæ­¥ä¸­...");
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 String weatherCode = prefs.getString("weather_code","");
                 if (!TextUtils.isEmpty(weatherCode)) {
@@ -92,19 +92,19 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         }
     }
 
-    /*²éÑ¯ÏØ¼¶´úºÅËù¶ÔÓ¦µÄÌìÆø´úºÅ*/
+    /*æŸ¥è¯¢å¿çº§ä»£å·æ‰€å¯¹åº”çš„å¤©æ°”ä»£å·*/
     private void queryWeatherCode(String countyCode) {
-        String address = "http://www.weather.com.cn/data/list3/city" + countyCode + ".xml";
+        String address = "http://www.weather.com.cn/data/cityinfo/101" + countyCode + ".xml";
         queryFromServer(address,"CountyCode");
     }
 
-    /*²éÑ¯ÌìÆø´úºÅËù¶ÔÓ¦µÄÌìÆø*/
+    /*æŸ¥è¯¢å¤©æ°”ä»£å·æ‰€å¯¹åº”çš„å¤©æ°”*/
     private void queryWeatherInfo(String weatherCode) {
-        String address ="http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
+        String address ="http://www.weather.com.cn/data/cityinfo/101" + weatherCode + ".html";
         queryFromServer(address,"weatherCode");
     }
 
-    /*¸ù¾İ´«ÈëµÄµØÖ·ºÍÀàĞÍÈ¥Ïò·şÎñÆ÷²éÑ¯ÌìÆø´úºÅ»òÕßÌìÆøĞÅÏ¢*/
+    /*æ ¹æ®ä¼ å…¥çš„åœ°å€å’Œç±»å‹å»å‘æœåŠ¡å™¨æŸ¥è¯¢å¤©æ°”ä»£å·æˆ–è€…å¤©æ°”ä¿¡æ¯*/
     private void queryFromServer(final String address,final String type) {
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override
@@ -133,21 +133,21 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        publishText.setText("Í¬²½Ê§°Ü");
+                        publishText.setText("åŒæ­¥å¤±è´¥");
                     }
                 });
             }
         });
     }
 
-    /*´ÓSharedPreferencesÎÄ¼şÖĞ¶ÁÈ¡´æ´¢µÄÌìÆøĞÅÏ¢£¬²¢ÏÔÊ¾µ½½çÃæÉÏ*/
+    /*ä»SharedPreferencesæ–‡ä»¶ä¸­è¯»å–å­˜å‚¨çš„å¤©æ°”ä¿¡æ¯ï¼Œå¹¶æ˜¾ç¤ºåˆ°ç•Œé¢ä¸Š*/
     private void showWeather() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         cityNameText.setText(prefs.getString("city_name",""));
         temp1Text.setText(prefs.getString("temp1",""));
         temp2Text.setText(prefs.getString("temp2",""));
         weatherDespText.setText(prefs.getString("weather_desp",""));
-        publishText.setText("½ñÌì" + prefs.getString("publish_time",""));
+        publishText.setText("ä»Šå¤©" + prefs.getString("publish_time",""));
         currentDataText.setText(prefs.getString("current_data", ""));
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
